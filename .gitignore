@@ -1,4 +1,15 @@
 __pycache__/
 *.pyc
-build/
+*.pyo
+*.pyd
+
+.vs/
+.vscode/
+
+MoodTracker.Windows/bin/
+MoodTracker.Windows/obj/
+MoodTracker.Windows/publish/
+
 dist/
+build/
+*.log

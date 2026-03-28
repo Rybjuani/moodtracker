@@ -1,42 +1,61 @@
-# MoodTracker v3
+# MoodTracker
 
-MoodTracker es una app de escritorio en Python + Tkinter para registrar el estado de animo con la misma interfaz compacta en Linux y Windows.
+MoodTracker mantiene dos caminos de escritorio para Windows sin perder la interfaz original de la app:
 
-## Estructura
+- `moodtracker.py`: version original en `Python + Tkinter`, con la UI compacta actual.
+- `MoodTracker.Windows/`: alternativa nativa en `C# + WPF`.
 
-- `moodtracker.py`: aplicacion principal.
-- `install.sh`: instalador para Ubuntu/Debian.
-- `moodtracker.spec`: configuracion de PyInstaller para Windows.
-- `build_windows.bat`: build reproducible para generar `MoodTracker.exe` en Windows.
+## Contexto del repo
 
-## Ejecutar en Linux
+- La experiencia original y mas fiel al programa actual es `moodtracker.py`.
+- El build de Windows para conservar esa interfaz se hace con `PyInstaller`.
+- El repo tambien incluye una implementacion nativa para Windows y workflow de GitHub Actions.
+
+## Ejecutar la app original
+
+En Linux:
 
 ```bash
 python3 moodtracker.py
 ```
 
-O instalar:
+O instalarla:
 
 ```bash
 ./install.sh
 ```
 
-## Generar `MoodTracker.exe` en Windows
+En Windows, para desarrollo:
 
-Abrir `cmd` o PowerShell en la carpeta del proyecto y ejecutar:
+```bat
+py -3 moodtracker.py
+```
+
+## Generar `MoodTracker.exe` con la interfaz original
+
+En una maquina Windows:
 
 ```bat
 build_windows.bat
 ```
 
-Eso instala `PyInstaller` y `matplotlib`, limpia artefactos previos y genera:
+Ese flujo genera:
 
-```text
-dist\MoodTracker.exe
+- `dist\MoodTracker.exe`
+- `MoodTracker-Setup.exe` si Inno Setup esta instalado
+
+Para mas detalle del empaquetado original en Windows, ver `README_WINDOWS.md`.
+
+## Build nativo alternativo
+
+La variante `WPF` se compila desde:
+
+```bat
+cd MoodTracker.Windows
+build_windows_native.bat
 ```
 
-## Notas de empaquetado
+## Datos y autoinicio
 
-- La interfaz original no cambia: el build usa la misma app `Tkinter`.
-- El autoinicio en Windows funciona tanto ejecutando `moodtracker.py` como ejecutando el `.exe`.
-- Los datos en Windows se guardan en `%APPDATA%\MoodTracker\data.json`.
+- En Windows los datos se guardan en `%APPDATA%\MoodTracker\data.json`.
+- El boton `Inicio auto` funciona tanto ejecutando el script como ejecutando el `.exe`.

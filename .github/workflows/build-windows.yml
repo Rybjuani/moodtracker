@@ -1,0 +1,64 @@
+name: Build Windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/build-windows.yml"
+      - "MoodTracker.Windows/**"
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Publish single-file exe
+        working-directory: MoodTracker.Windows
+        run: |
+          dotnet publish MoodTracker.Windows.csproj `
+            -c Release `
+            -r win-x64 `
+            --self-contained true `
+            -p:PublishSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            -p:DebugType=None `
+            -p:DebugSymbols=false `
+            -o publish
+
+      - name: Install Inno Setup
+        run: choco install innosetup -y
+
+      - name: Build installer
+        working-directory: MoodTracker.Windows
+        run: |
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" `
+            /DMyAppName=MoodTracker `
+            /DMyAppVersion=1.0.0 `
+            /DMyAppPublisher=MoodTracker `
+            installer_windows_native.iss
+
+      - name: Upload exe artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MoodTracker-exe
+          path: MoodTracker.Windows/publish/MoodTracker.exe
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MoodTracker-installer
+          path: MoodTracker.Windows/MoodTracker-Windows-Setup-1.0.0.exe
