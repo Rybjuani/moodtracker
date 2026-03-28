@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>MoodTracker</AssemblyName>
+    <RootNamespace>MoodTracker.Windows</RootNamespace>
+    <Company>MoodTracker</Company>
+    <Product>MoodTracker</Product>
+    <Authors>MoodTracker</Authors>
+    <Description>Aplicacion de escritorio para seguimiento diario del estado de animo.</Description>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <InformationalVersion>1.0.0</InformationalVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="Exists('app.ico')">
+    <ApplicationIcon>app.ico</ApplicationIcon>
+  </PropertyGroup>
+</Project>
