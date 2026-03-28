@@ -4,10 +4,11 @@ La app puede distribuirse en Windows como ejecutable o instalador de doble clic.
 
 ## Que recibe el usuario final
 
-- `MoodTracker-Setup.exe`: instalador recomendado
+- `MoodTracker-Setup.exe`: instalador recomendado y suficiente por si solo
 - `dist\MoodTracker.exe`: ejecutable portable
 
 Con cualquiera de los dos, el usuario comun solo hace doble clic.
+Si queres entregar un unico archivo para Windows, usa `MoodTracker-Setup.exe`.
 
 ## Requisitos de la maquina de build
 
@@ -35,6 +36,15 @@ El script:
 1. instala o actualiza `PyInstaller`
 2. genera `dist\MoodTracker.exe`
 3. genera `MoodTracker-Setup.exe` si encuentra Inno Setup
+
+## GitHub Actions
+
+El workflow `Build Windows` ahora genera la version original de `moodtracker.py` y publica dos artefactos:
+
+- `MoodTracker-standalone-installer-exe`: el instalador final que alcanza por si solo
+- `MoodTracker-portable-exe`: el ejecutable portable
+
+Si solo queres bajar un archivo y usar el programa en Windows, descarga `MoodTracker-standalone-installer-exe`.
 
 ## Opciones de build
 

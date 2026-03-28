@@ -7,58 +7,54 @@ on:
       - main
     paths:
       - ".github/workflows/build-windows.yml"
-      - "MoodTracker.Windows/**"
+      - "moodtracker.py"
+      - "moodtracker.spec"
+      - "build_windows.bat"
+      - "installer_windows.iss"
+      - "windows_version_info.txt"
+      - "README_WINDOWS.md"
 
 jobs:
   build:
     runs-on: windows-latest
 
-    defaults:
-      run:
-        shell: pwsh
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup .NET 8
-        uses: actions/setup-dotnet@v4
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
         with:
-          dotnet-version: 8.0.x
+          python-version: "3.12"
 
-      - name: Publish single-file exe
-        working-directory: MoodTracker.Windows
+      - name: Install build dependencies
+        shell: pwsh
         run: |
-          dotnet publish MoodTracker.Windows.csproj `
-            -c Release `
-            -r win-x64 `
-            --self-contained true `
-            -p:PublishSingleFile=true `
-            -p:IncludeNativeLibrariesForSelfExtract=true `
-            -p:DebugType=None `
-            -p:DebugSymbols=false `
-            -o publish
+          python -m pip install --upgrade pip
+          python -m pip install pyinstaller matplotlib
 
       - name: Install Inno Setup
+        shell: pwsh
         run: choco install innosetup -y
 
-      - name: Build installer
-        working-directory: MoodTracker.Windows
+      - name: Build Windows exe and installer
+        shell: cmd
+        run: build_windows.bat -Clean
+
+      - name: Verify outputs
+        shell: pwsh
         run: |
-          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" `
-            /DMyAppName=MoodTracker `
-            /DMyAppVersion=1.0.0 `
-            /DMyAppPublisher=MoodTracker `
-            installer_windows_native.iss
+          if (!(Test-Path "dist/MoodTracker.exe")) { throw "No se genero dist/MoodTracker.exe" }
+          if (!(Test-Path "MoodTracker-Setup.exe")) { throw "No se genero MoodTracker-Setup.exe" }
 
-      - name: Upload exe artifact
+      - name: Upload portable exe artifact
         uses: actions/upload-artifact@v4
         with:
-          name: MoodTracker-exe
-          path: MoodTracker.Windows/publish/MoodTracker.exe
+          name: MoodTracker-portable-exe
+          path: dist/MoodTracker.exe
 
-      - name: Upload installer artifact
+      - name: Upload standalone installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: MoodTracker-installer
-          path: MoodTracker.Windows/MoodTracker-Windows-Setup-1.0.0.exe
+          name: MoodTracker-standalone-installer-exe
+          path: MoodTracker-Setup.exe
